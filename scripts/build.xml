@@ -1,0 +1,46 @@
+<project name="Cards" default="jar" basedir="../">
+	
+	<property name="src" location="src"/>
+	<property name="bin" location="bin"/>
+	<property name="jar" location="jar"/>
+	<property name="res" location="resources"/>
+	
+	<target name="clean"
+		description="clean up">
+		<delete dir="${jar}"/>
+		<delete dir="${bin}"/>
+	</target>
+	
+	<target name="init">
+		<mkdir dir="${bin}"/>
+	</target>
+	
+	<target name="compile" depends="init"
+	      description="compile the source">
+		<javac srcdir="${src}" destdir="${bin}" includeantruntime="false"/>
+	</target>
+	
+	<target name="jar" depends="clean,compile"
+	      description="generate the distribution">
+		<mkdir dir="${jar}"/>
+		<mkdir dir="${jar}/Rules"/>
+		
+		<copy todir="${jar}/Rules">
+			<fileset dir="${res}/rules"/>
+		</copy>
+	
+		<jar destfile="${jar}/Cards.jar" basedir="${bin}">
+			<fileset dir="${res}" excludes="**/Rules/**" />
+			<fileset dir="${src}" includes="**/*.java" />
+			<manifest>
+				<attribute name="Main-Class"
+					value="main.Main"/>
+		    </manifest>
+		</jar>
+		
+	</target>
+	
+	<target name="run">
+        <java jar="${jar}/Cards.jar" fork="true"/>
+    </target>
+</project>
